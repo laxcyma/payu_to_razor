@@ -89,12 +89,9 @@ def pay_invoice(request):
         invoice = Invoice.objects.get(pk=invoice_id, client=request.user.get_active_client(request=request))
     except Invoice.DoesNotExist:
         raise gateway_exceptions.GatewayException(_('Invoice {} does not exist').format(invoice_id))
-    return HttpResponse
-	call_create_order = create_order()
-	order_id =	 call_create_order['id']
-	if order_id:
-		return redirect(f"https://checkout.razorpay.com/v1/pay/{order_id}")
     
+    call_create_order = create_order()
+    order_id = call_create_order['id']     
     return redirect(f"https://checkout.razorpay.com/v1/pay/{order_id}")  
 
 @staff_gateway_action(
@@ -107,7 +104,7 @@ def capture(request):
     try:
         transaction = Transaction.objects.get(id=transaction_id)
         transaction.status = TransactionStatus.CONFIRMED
-        transaction.save()
+        # transaction.save()
         return Response({'detail': 'Ok'})
     except Transaction.DoesNotExist:
         raise gateway_exceptions.GatewayException('Invalid transaction ID')
@@ -223,10 +220,7 @@ def callback(request):
     # Handle the different Razorpay payment statuses
     payment_status = payload.get('payload').get('payment').get('entity').get('status')
     total_amount = Decimal(payload.get('payload').get('payment').get('entity').get('amount')) / 100  # Convert back to your currency format
-	
-	
-	
-	
+		
     if payment_status == 'captured':
         #---------
 		# existing_transaction = Transaction.objects.filter(

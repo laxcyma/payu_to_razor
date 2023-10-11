@@ -266,7 +266,7 @@ def callback(request):
 		# 		raise gateway_exceptions.InvoicePaymentException('Transaction error', invoice_id=invoice_id)
 			
 			#--------
-		return JsonResponse({'detail': 'Payment captured'}, status=200)
+	return JsonResponse({'detail': 'Payment captured'}, status=200)
 
     elif payment_status == 'failed':
         # process refund for pre-auth transaction
